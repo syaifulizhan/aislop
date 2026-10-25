@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { isCiEnv } from "./telemetry/env.js";
 import { highlightAislop } from "./ui/brand.js";
 import { theme } from "./ui/theme.js";
 import { APP_VERSION } from "./version.js";
@@ -11,12 +10,8 @@ const CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000;
 const REQUEST_TIMEOUT_MS = 2000;
 const CACHE_BASENAME = "update_check.json";
 
-export const isUpdateNotifierDisabled = (env: NodeJS.ProcessEnv = process.env): boolean => {
-	if (env.AISLOP_NO_UPDATE_NOTIFIER === "1") return true;
-	if (env.NO_UPDATE_NOTIFIER === "1") return true;
-	if (env.DO_NOT_TRACK === "1") return true;
-	return isCiEnv(env);
-};
+// Hardened fork: never contacts the npm registry; updates arrive by merging upstream.
+export const isUpdateNotifierDisabled = (_env: NodeJS.ProcessEnv = process.env): boolean => true;
 
 export const resolveUpdateCachePath = (
 	homedir: string = os.homedir(),

@@ -23,14 +23,9 @@ export interface TelemetryConfig {
 	enabled?: boolean;
 }
 
-export const isTelemetryDisabled = (config?: TelemetryConfig): boolean => {
-	const env = process.env;
-	if (env.AISLOP_NO_TELEMETRY === "1" || env.DO_NOT_TRACK === "1") return true;
-	if (config?.enabled === false) return true;
-	if (config?.enabled === true) return false;
-	if (env.CI === "true" || env.CI === "1") return true;
-	return false;
-};
+// Hardened fork: telemetry is compiled out of the decision. No event ever leaves the machine,
+// whatever the environment or config says.
+export const isTelemetryDisabled = (_config?: TelemetryConfig): boolean => true;
 
 const isDebug = (): boolean => process.env.AISLOP_TELEMETRY_DEBUG === "1";
 
